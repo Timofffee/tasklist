@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/head_tmpl.php";
 
-function render_page() { ?>
+function render_page($incorrect_pass) { ?>
     <!DOCTYPE html>
     <html lang="en">
     <? render_head("Sign in") ?>

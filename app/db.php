@@ -9,7 +9,7 @@ class DB {
 
     protected $pdo = null;
 
-    function __construct() {
+    public function __construct() {
         $dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $opt = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -20,14 +20,14 @@ class DB {
 
     }
 
-    function getRow($sql, $args) {
+    public function getRow($sql, $args) {
         $stmt = $this->pdo->prepare($sql);
         if($stmt->execute($args))
             return $stmt->fetch();
         return false;
     }
 
-    function getAllRows($sql, $args) {
+    public function getAllRows($sql, $args) {
         $stmt = $this->pdo->prepare($sql);
         if($stmt->execute($args))
             return $stmt->fetchAll();
@@ -35,7 +35,7 @@ class DB {
         
     }
 
-    function query($sql, $args) {
+    public function query($sql, $args) {
         $stmt = $this->pdo->prepare($sql);
         if($stmt->execute($args))
             return $this->pdo->lastInsertId();

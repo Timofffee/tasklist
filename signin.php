@@ -3,17 +3,17 @@
 require_once __DIR__ . "/app/model.php";
 require_once __DIR__ . "/templates/signin_tmpl.php";
 
-$m = new Model();
+$u = new UserModel();
 
-if ($m->userIsLogged())
+if ($u->isLogged())
     header('Location: /');
 
 $incorrect_pass = 0;
 
 if (isset($_POST["submit"])) {
     if(!empty($_POST["login"]) and !empty($_POST["login"])) {
-        if ($m->hasUser($_POST["login"])) { # exisits 
-            $user = $m->loginUser($_POST["login"], $_POST["pass"]);
+        if ($u->has($_POST["login"])) { # exisits 
+            $user = $u->login($_POST["login"], $_POST["pass"]);
             if ($user) {
                 setcookie("id", $user["id"], time()+60*60*24*30, "/", null, null, true);
                 setcookie("hash", $user["hash"], time()+60*60*24*30, "/", null, null, true);
@@ -22,7 +22,7 @@ if (isset($_POST["submit"])) {
                 $incorrect_pass = 2;
             }
         } else { #new user?
-            $user = $m->regUser($_POST["login"], $_POST["pass"]);
+            $user = $u->reg($_POST["login"], $_POST["pass"]);
             if ($user) {
                 setcookie("id", $user["id"], time()+60*60*24*30, "/", null, null, true);
                 setcookie("hash", $user["hash"], time()+60*60*24*30, "/", null, null, true);
@@ -34,5 +34,5 @@ if (isset($_POST["submit"])) {
     }
 }
 
-render_page();
+render_page($incorrect_pass);
 ?>

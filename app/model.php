@@ -2,19 +2,23 @@
 
 require_once __DIR__ . "/db.php";
 
-class Model 
+abstract class Model 
 {
     private $db;
 
-    function __construct() 
+    public function __construct() 
     {
         $this->$db = new DB();
     }
 
-    function userIsLogged()
+}
+
+class UserModel extends Model 
+{    
+    public function isLogged()
     {   
         if (isset($_COOKIE["id"]) and isset($_COOKIE["hash"])) {
-            $user = $this->getCurrentUser();
+            $user = $this->getCurrent();
             if ($user and $user["id"] == $_COOKIE["id"] and $user["hash"] == $_COOKIE["hash"]) {
                 return true;
             }
@@ -22,7 +26,7 @@ class Model
         return false;
     }
 
-    function getCurrentUser() 
+    public function getCurrent() 
     {          
         $sql = "SELECT * FROM users WHERE id = :id LIMIT 1";
         return $this->$db->getRow($sql, [
@@ -31,7 +35,7 @@ class Model
         return false;
     }
 
-    function getUser($id) 
+    public function get($id) 
     {          
         $sql = "SELECT * FROM users WHERE id = :id LIMIT 1";
         return $this->$db->getRow($sql, [
@@ -40,20 +44,21 @@ class Model
         return false;
     }
 
-    function hasUser($login) {
+    public function has($login) 
+    {
         $user = $this->$db->getRow(
             "SELECT * FROM users WHERE login = :login LIMIT 1", [
-                "login" => $login
+                "login" => htmlspecialchars($login, ENT_QUOTES, 'UTF-8')
             ]
         );
         return boolval($user);
     }
 
-    function loginUser($login, $pass) 
+    public function login($login, $pass) 
     {
         $user = $this->$db->getRow(
             "SELECT * FROM users WHERE login = :login LIMIT 1", [
-                "login" => $login
+                "login" => htmlspecialchars($login, ENT_QUOTES, 'UTF-8')
             ]
         );
         if ($user) {
@@ -64,12 +69,12 @@ class Model
         return false;
     }
 
-    function regUser($login, $pass) 
+    public function reg($login, $pass) 
     {
         $hash = hash("joaat", rand());
         $id = $this->$db->query(
             "INSERT INTO users (login, password, hash) VALUES (:login, :pass, :hash)", [
-                "login" => $login,
+                "login" => htmlspecialchars($login, ENT_QUOTES, 'UTF-8'),
                 "pass" => password_hash(
                     $pass, 
                     PASSWORD_DEFAULT, 
@@ -83,10 +88,14 @@ class Model
         }
         return false;
     }
+}
 
-    function addTask($desc) 
+class TaskModel extends Model 
+{ 
+    public function add($desc) 
     {
-        if ($this->userIsLogged()) {
+        $u = new UserModel();
+        if ($u->isLogged()) {
             return $this->$db->query(
                 "INSERT INTO tasks (user_id, description) VALUES (:id, :desc)", [
                     "id" => htmlspecialchars($_COOKIE["id"], ENT_QUOTES, 'UTF-8'), 
@@ -96,9 +105,10 @@ class Model
         }
     }
 
-    function delTask($id) 
+    public function delete($id) 
     {
-        if ($this->userIsLogged()) {
+        $u = new UserModel();
+        if ($u->isLogged()) {
             return $this->$db->query(
                 "DELETE FROM tasks WHERE id = :id and user_id = :user_id", [
                     "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8'),
@@ -108,9 +118,10 @@ class Model
         }
     }
 
-    function doneTask($id) 
+    public function done($id) 
     {
-        if ($this->userIsLogged()) {
+        $u = new UserModel();
+        if ($u->isLogged()) {
             $this->$db->query(
                 "UPDATE tasks SET status=1 WHERE id = :id and user_id = :user_id", [
                     "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8'),
@@ -120,11 +131,13 @@ class Model
         }
     }
 
-    function getTasks() {
-        if ($this->userIsLogged()) {
-            return $this->$db->getAllRows("SELECT * FROM tasks WHERE user_id = :id", [
+    public function getAll() {
+        $u = new UserModel();
+        if ($u->isLogged()) {
+            $tasks = $this->$db->getAllRows("SELECT * FROM tasks WHERE user_id = :id", [
                 "id" => $_COOKIE["id"]
             ]);
+            return $tasks;
         } 
         return false;
     }
