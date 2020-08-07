@@ -5,6 +5,7 @@ require_once __DIR__ . "/db.php";
 
 if (isset($_GET["logout"])) {
     setcookie("id", time() - 3600);
+    setcookie("hash", time() - 3600);
     header('Location: /signin.php');
 }
 
@@ -29,8 +30,9 @@ $db = new DB();
 { # del task
     if (isset($_POST["del"])) {
         $task = $db->query(
-            "DELETE FROM tasks WHERE id = :id", [
-                "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8')
+            "DELETE FROM tasks WHERE id = :id and user_id = :user_id", [
+                "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8'),
+                "user_id" => $_COOKIE["id"]
             ]
         );
         header('Location: /');
@@ -40,8 +42,10 @@ $db = new DB();
 { # done task
     if (isset($_POST["done"])) {
         $task = $db->query(
-            "UPDATE tasks SET status=1 WHERE id = :id", 
-            ["id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8')]
+            "UPDATE tasks SET status=1 WHERE id = :id and user_id = :user_id", [
+                "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8'),
+                "user_id" => $_COOKIE["id"]
+            ]
         );
         header('Location: /');
     }

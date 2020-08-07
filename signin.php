@@ -15,19 +15,27 @@ if (isset($_POST["submit"])) {
         if ($user) { # exisits
             if (password_verify($_POST["pass"], $user["password"])) {
                 setcookie("id", $user["id"], time()+60*60*24*30, "/", null, null, true);
+                setcookie("hash", $user["hash"], time()+60*60*24*30, "/", null, null, true);
                 header('Location: /');
             } else { # pass incorrect
                 $incorrect_pass = 2;
             }
         } else { #new user?
+            $hash = hash("joaat", rand());
             $id = $db->query(
-                "INSERT INTO users (login, password) VALUES (:login, :pass)", [
+                "INSERT INTO users (login, password, hash) VALUES (:login, :pass, :hash)", [
                     "login" => $_POST["login"],
-                    "pass" => password_hash($_POST["pass"], PASSWORD_DEFAULT, array("cost" => 10))
+                    "pass" => password_hash(
+                        $_POST["pass"], 
+                        PASSWORD_DEFAULT, 
+                        array("cost" => 10)
+                    ),
+                    "hash" => $hash
                  ]
             );
             if ($id) {
                 setcookie("id", $id, time()+60*60*24*30, "/", null, null, true);
+                setcookie("hash", $hash, time()+60*60*24*30, "/", null, null, true);
                 header('Location: /');
             }
         }

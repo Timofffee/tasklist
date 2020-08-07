@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Авг 07 2020 г., 08:23
+-- Время создания: Авг 07 2020 г., 11:18
 -- Версия сервера: 10.3.13-MariaDB
 -- Версия PHP: 7.1.22
 
@@ -46,7 +46,8 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `login` varchar(80) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `created_ad` date DEFAULT current_timestamp()
+  `created_ad` date DEFAULT current_timestamp(),
+  `hash` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -81,7 +82,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

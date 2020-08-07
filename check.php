@@ -6,9 +6,9 @@ function userIsLogged()
 {
     $db = new DB();
 
-    if (isset($_COOKIE["id"]) and $_COOKIE["id"] > 0) {
+    if (isset($_COOKIE["id"]) and isset($_COOKIE["hash"])) {
         $user = $db->getUser(intval($_COOKIE["id"]));
-        if ($user and $user["id"] == $_COOKIE["id"]) {
+        if ($user and $user["id"] == $_COOKIE["id"] and $user["hash"] == $_COOKIE["hash"]) {
             return true;
         }
     }
