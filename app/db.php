@@ -41,20 +41,6 @@ class DB {
             return $this->pdo->lastInsertId();
         return false;
     }
-
-    function getUser($val) {
-        if (is_int($val)) { # id
-            $sql = "SELECT * FROM users WHERE id = :val LIMIT 1";
-            return $this->getRow($sql, [
-                "val" => $val
-            ]);
-        } elseif (is_string($val)) { # login
-            $sql = "SELECT * FROM users WHERE login = :val LIMIT 1";
-            return $this->getRow(
-                $sql, [
-                    "val" => htmlspecialchars($val, ENT_QUOTES, 'UTF-8')
-                ]);
-        }
-        return false;
-    }
 }
+
+

@@ -1,7 +1,9 @@
 <?php
 
-require_once __DIR__ . "/check.php";
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/app/model.php";
+require_once __DIR__ . "/templates/index_tmpl.php";
+
+$m = new Model();
 
 if (isset($_GET["logout"])) {
     setcookie("id", time() - 3600);
@@ -9,87 +11,25 @@ if (isset($_GET["logout"])) {
     header('Location: /signin.php');
 }
 
-if (!userIsLogged()) {
+if (!$m->userIsLogged()) {
     header('Location: /signin.php');
 }
 
-$db = new DB();
-
-{ # add task
-    if (isset($_POST["add"]) and !empty($_POST["desc"])) {
-        $task = $db->query(
-            "INSERT INTO tasks (user_id, description) VALUES (:id, :desc)", [
-                "id" => htmlspecialchars($_COOKIE["id"], ENT_QUOTES, 'UTF-8'), 
-                "desc" => htmlspecialchars($_POST["desc"], ENT_QUOTES, 'UTF-8')
-            ]
-        );
-        header('Location: /');
-    }
+if (isset($_POST["add"]) and !empty($_POST["desc"])) { # add task
+    $m->addTask($_POST["desc"]);
+    header('Location: /');
 }
 
-{ # del task
-    if (isset($_POST["del"])) {
-        $task = $db->query(
-            "DELETE FROM tasks WHERE id = :id and user_id = :user_id", [
-                "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8'),
-                "user_id" => $_COOKIE["id"]
-            ]
-        );
-        header('Location: /');
-    }
+if (isset($_POST["del"])) { # del task
+    $m->delTask($_POST["del"]);
+    header('Location: /');
 }
 
-{ # done task
-    if (isset($_POST["done"])) {
-        $task = $db->query(
-            "UPDATE tasks SET status=1 WHERE id = :id and user_id = :user_id", [
-                "id" => htmlspecialchars($_POST["task"], ENT_QUOTES, 'UTF-8'),
-                "user_id" => $_COOKIE["id"]
-            ]
-        );
-        header('Location: /');
-    }
+if (isset($_POST["done"])) { # done task
+    $m->doneTask($_POST["done"]);
+    header('Location: /');
 }
 
+
+render_page($m->getTasks());
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Task list</title>
-</head>
-<body>
-    <body>
-        <div class="container">
-            <h1>Task list</h1>
-            <form action="/" method="post">
-                <div class="buttons">
-                    <input type="text" name="desc" placeholder="New task">
-                    <input type="submit" value="Add" name="add">
-                    <input type="submit" value="Delete" name="del">
-                    <input type="submit" value="Done" name="done">
-                </div>
-                <div class="tasks">
-                    <?php
-                    $rows = $db->getAllRows("SELECT * FROM tasks WHERE user_id = :id", [
-                        "id" => $_COOKIE["id"]
-                    ]);
-                    foreach ($rows as $row) { 
-                        $task = "task".$row["id"];
-                        ?>
-                            <div class="row task <?=($row["status"]) ? "done" : ""?>">
-                                <input type="radio" name="task" id="<?=$task?>" value="<?=$row["id"]?>">
-                                <label for="<?=$task?>"><?=$row["description"]?></label>
-                            </div>
-                    <? } ?>
-                </div>
-            </form>
-            <a href="/?logout=1">Logout</a>
-        </div>
-        
-    </body>
-</body>
-</html>
