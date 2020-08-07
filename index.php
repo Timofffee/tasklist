@@ -15,7 +15,7 @@ if (!userIsLogged()) {
 $db = new DB();
 
 { # add task
-    if (isset($_POST["add"])) {
+    if (isset($_POST["add"]) and !empty($_POST["desc"])) {
         $task = $db->query(
             "INSERT INTO tasks (user_id, description) VALUES (:id, :desc)", [
                 "id" => htmlspecialchars($_COOKIE["id"], ENT_QUOTES, 'UTF-8'), 
