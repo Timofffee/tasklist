@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . "/head_tmpl.php";
-require_once __DIR__ . "/task_tmpl.php";
+require_once __DIR__ . "/headView.php";
+require_once __DIR__ . "/taskView.php";
 
 
 function render_page($tasks=[]) { ?>

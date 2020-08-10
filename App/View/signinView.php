@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/head_tmpl.php";
+require_once __DIR__ . "/headView.php";
 
 function render_page($incorrect_pass) { ?>
     <!DOCTYPE html>

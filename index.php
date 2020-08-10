@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . "/app/model.php";
-require_once __DIR__ . "/templates/index_tmpl.php";
+require_once __DIR__ . "/App/Model.php";
+require_once __DIR__ . "/App/View/indexView.php";
 
 $u = new UserModel();
 $t = new TaskModel();
