@@ -4,32 +4,34 @@ class Route
 {
     static function start()
     {
-        $controller_basename = 'Task';
+        $basename = 'Task';
         $action = 'index';
         
         $routes = explode('/', $_SERVER['REQUEST_URI']);
 
-        $controller_basename = empty($routes[1]) ? $controller_basename : $routes[1];
+        if (!empty($routes[1]) and $routes[1] == '404') {
+            View::view('', 'errors/404');
+            exit();
+        }
+
+        $basename = empty($routes[1]) ? $basename : $routes[1];
         $action = empty($routes[2]) ? $action : $routes[2];
 
-        $model_name = $controller_basename.'_model';
-        $controller_name = $controller_basename.'_controller';
+        // $model_name = $basename.'Model';
+        // $controller_name = $basename.'Controller';
 
-        $model_file = strtolower($model_name).'.php';
-        $model_path = "app/models/".$model_file;
-        if(file_exists($model_path)) {
-            include "app/models/".$model_file;
-        }
+        // $model_file = strtolower($model_name).'.php';
+        // $model_path = "app/models/".$model_file;
+        // if(file_exists($model_path)) {
+        //     include "app/models/".$model_file;
+        // }
 
-        $controller_file = strtolower($controller_name).'.php';
-        $controller_path = "app/controllers/".$controller_file;
-        if(file_exists($controller_path)) {
-            include "app/controllers/".$controller_file;
-        } else {
+        $controller_class = $basename.'Controller';
+
+        $controller_file = $controller_class . '.php';
+        if(!file_exists(CONTROLLERS_PATH . $controller_file)) {
             Route::ErrorPage404();
-        }
-        
-        $controller_class = $controller_basename.'Controller';
+        } 
 
         $controller = new $controller_class;
         

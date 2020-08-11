@@ -7,6 +7,6 @@
     <title><?=empty($title) ? "Task list" : $title ?></title>
 </head>
 <body>
-<?php include 'app/views/'.$content_view; ?>
+<?php include VIEWS_PATH . $content_view . VIEW_EXT; ?>
 </body>
 </html>

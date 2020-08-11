@@ -10,7 +10,7 @@
         <div class="tasks">
             <?php
             foreach ($data as $task) { 
-                include 'app/views/task_view.php';
+                include VIEWS_PATH . 'task' . VIEW_EXT;
             } ?>
         </div>
     </form>
