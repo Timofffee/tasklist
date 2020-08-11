@@ -1,5 +1,7 @@
 <?php
 
-require_once 'app/bootstrap.php';
+require_once 'app/app.php';
 
+$app = new App;
 
+Route::routes($app);

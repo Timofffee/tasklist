@@ -1,6 +1,6 @@
 <div class="container">
     <h1>Sign in</h1>
-    <form action="/auth/auth" method="post">
+    <form action="/auth" method="post">
         <input type="text" placeholder="Login" name="login" value="<?=$data['login']?>">
         <input type="password" placeholder="Password" name="pass" value="<?=$data['pass']?>">
         <?php if ($data['error'] == 1): ?> 

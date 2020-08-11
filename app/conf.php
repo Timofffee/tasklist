@@ -9,5 +9,6 @@ const DB_CHARSET  = 'utf8';
 const MODELS_PATH = __DIR__ . '/models/';
 const CONTROLLERS_PATH = __DIR__ . '/controllers/';
 const VIEWS_PATH = __DIR__ . '/views/';
+const ROUTES_PATH = __DIR__ . '/routes/';
 
 const VIEW_EXT = '.view.php';

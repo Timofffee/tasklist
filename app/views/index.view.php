@@ -14,5 +14,5 @@
             } ?>
         </div>
     </form>
-    <a href="/auth/logout">Logout</a>
+    <a href="/logout">Logout</a>
 </div>
